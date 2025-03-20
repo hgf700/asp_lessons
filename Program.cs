@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using aspapp.Models;
 
-
 namespace aspapp
 {
     public class Program

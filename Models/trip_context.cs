@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using static aspapp.Models.trip;
+using aspapp.Models;
 
 
 namespace aspapp.Models
