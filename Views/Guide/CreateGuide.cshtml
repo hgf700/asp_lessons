@@ -1,0 +1,28 @@
+﻿@model aspapp.Models.Guide
+@{
+    ViewData["Title"] = "CreateGuide";
+}
+
+<div class="row">
+    <div class="col-md-8">
+        <form asp-action="CreateGuide">
+            @Html.AntiForgeryToken()
+
+            <div class="form-group">
+                <label asp-for="Firstname" class="control-label"></label>
+                <input asp-for="Firstname" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Title" class="control-label"></label>
+                <select asp-for="Title" class="form-control" asp-items="Html.GetEnumSelectList<aspapp.Models.TitleEnum>()">
+                    <option>Select title ...</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>

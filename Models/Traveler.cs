@@ -1,5 +1,4 @@
-﻿
-namespace aspapp.Models
+﻿namespace aspapp.Models
 {
     public class Traveler
     {
@@ -9,7 +8,7 @@ namespace aspapp.Models
         public string Email { get; set; } = string.Empty;
         public DateTime BirthDate { get; set; }
 
-        // Relacja wiele do wielu (Podróżnik może brać udział w wielu wycieczkach)
+        // Many-to-many relationship: A Traveler can participate in many Trips
         public List<Trip> Trips { get; set; } = new();
     }
 }

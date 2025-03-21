@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using aspapp.Models;
 
-
 namespace aspapp.Models
 {
     public class trip_context : DbContext
@@ -14,13 +13,13 @@ namespace aspapp.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Relacja wiele do wielu między Traveler a Trip
+            // Many-to-many relationship between Traveler and Trip
             modelBuilder.Entity<Trip>()
                 .HasMany(t => t.Travelers)
                 .WithMany(tr => tr.Trips)
                 .UsingEntity(j => j.ToTable("TripTraveler"));
 
-            // Relacja jeden do wielu między Guide a Trip
+            // One-to-many relationship between Guide and Trip
             modelBuilder.Entity<Trip>()
                 .HasOne(t => t.Guide)
                 .WithMany(g => g.Trips)
@@ -29,5 +28,3 @@ namespace aspapp.Models
         }
     }
 }
-    
-
