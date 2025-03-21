@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using aspapp.Models;
 using aspapp.Pages.Home;
-using aspapp.Pages.TripController;
+using aspapp.Pages.Trip;
 
 namespace WebAppActions.Controllers
 {

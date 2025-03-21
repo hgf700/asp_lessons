@@ -1,17 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using aspapp.Models;
 using aspapp.Pages.Home;
-using aspapp.Pages.TripController;
+
 
 namespace aspapp.Controllers
 {
-    public class TripControler : Controller
+    public class TripController : Controller
     {
-        public IActionResult Index()
+
+        public IActionResult Login()
         {
             return View();
         }
-        public IActionResult Create()
+        public IActionResult Search()
         {
             return View();
         }
