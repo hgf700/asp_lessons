@@ -13,18 +13,29 @@ namespace aspapp.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Many-to-many relationship between Traveler and Trip
+            // Many-to-Many relationship between Traveler and Trip
             modelBuilder.Entity<Trip>()
                 .HasMany(t => t.Travelers)
                 .WithMany(tr => tr.Trips)
-                .UsingEntity(j => j.ToTable("TripTraveler"));
+                .UsingEntity<Dictionary<string, object>>(
+                    "TripTraveler", // Nazwa tabeli pośredniej
+                    j => j.HasOne<Traveler>().WithMany().HasForeignKey("TravelerId").OnDelete(DeleteBehavior.Cascade),
+                    j => j.HasOne<Trip>().WithMany().HasForeignKey("TripId").OnDelete(DeleteBehavior.Cascade)
+                );
 
-            // One-to-many relationship between Guide and Trip
+            // One-to-Many relationship between Guide and Trip
             modelBuilder.Entity<Trip>()
                 .HasOne(t => t.Guide)
                 .WithMany(g => g.Trips)
                 .HasForeignKey(t => t.GuideId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // One-to-Many relationship between Traveler and Trip (for main traveler)
+            modelBuilder.Entity<Trip>()
+                .HasOne(t => t.Traveler)
+                .WithMany() // This is fine because Traveler does not need a collection of trips
+                .HasForeignKey(t => t.TravelerId)
+                .OnDelete(DeleteBehavior.SetNull); // Allow null on TravelerId if Traveler is deleted
         }
     }
 }

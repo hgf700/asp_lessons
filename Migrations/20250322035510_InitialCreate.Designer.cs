@@ -12,7 +12,7 @@ using aspapp.Models;
 namespace aspapp.Migrations
 {
     [DbContext(typeof(trip_context))]
-    [Migration("20250320133444_InitialCreate")]
+    [Migration("20250322035510_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -25,22 +25,22 @@ namespace aspapp.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("TravelerTrip", b =>
+            modelBuilder.Entity("TripTraveler", b =>
                 {
-                    b.Property<int>("TravelersId")
+                    b.Property<int>("TravelerId")
                         .HasColumnType("int");
 
-                    b.Property<int>("TripsId")
+                    b.Property<int>("TripId")
                         .HasColumnType("int");
 
-                    b.HasKey("TravelersId", "TripsId");
+                    b.HasKey("TravelerId", "TripId");
 
-                    b.HasIndex("TripsId");
+                    b.HasIndex("TripId");
 
-                    b.ToTable("TripTraveler", (string)null);
+                    b.ToTable("TripTraveler");
                 });
 
-            modelBuilder.Entity("aspapp.Models.trip+Guide", b =>
+            modelBuilder.Entity("aspapp.Models.Guide", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -60,16 +60,15 @@ namespace aspapp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Title")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.ToTable("Guides");
                 });
 
-            modelBuilder.Entity("aspapp.Models.trip+Traveler", b =>
+            modelBuilder.Entity("aspapp.Models.Traveler", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -97,7 +96,7 @@ namespace aspapp.Migrations
                     b.ToTable("Travelers");
                 });
 
-            modelBuilder.Entity("aspapp.Models.trip+Trip", b =>
+            modelBuilder.Entity("aspapp.Models.Trip", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -116,40 +115,52 @@ namespace aspapp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("TravelerId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("GuideId");
 
+                    b.HasIndex("TravelerId");
+
                     b.ToTable("Trips");
                 });
 
-            modelBuilder.Entity("TravelerTrip", b =>
+            modelBuilder.Entity("TripTraveler", b =>
                 {
-                    b.HasOne("aspapp.Models.trip+Traveler", null)
+                    b.HasOne("aspapp.Models.Traveler", null)
                         .WithMany()
-                        .HasForeignKey("TravelersId")
+                        .HasForeignKey("TravelerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("aspapp.Models.trip+Trip", null)
+                    b.HasOne("aspapp.Models.Trip", null)
                         .WithMany()
-                        .HasForeignKey("TripsId")
+                        .HasForeignKey("TripId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("aspapp.Models.trip+Trip", b =>
+            modelBuilder.Entity("aspapp.Models.Trip", b =>
                 {
-                    b.HasOne("aspapp.Models.trip+Guide", "Guide")
+                    b.HasOne("aspapp.Models.Guide", "Guide")
                         .WithMany("Trips")
                         .HasForeignKey("GuideId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("aspapp.Models.Traveler", "Traveler")
+                        .WithMany()
+                        .HasForeignKey("TravelerId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.Navigation("Guide");
+
+                    b.Navigation("Traveler");
                 });
 
-            modelBuilder.Entity("aspapp.Models.trip+Guide", b =>
+            modelBuilder.Entity("aspapp.Models.Guide", b =>
                 {
                     b.Navigation("Trips");
                 });

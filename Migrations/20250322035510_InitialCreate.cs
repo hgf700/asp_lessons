@@ -20,7 +20,7 @@ namespace aspapp.Migrations
                     Firstname = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Lastname = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Title = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -51,7 +51,8 @@ namespace aspapp.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    GuideId = table.Column<int>(type: "int", nullable: false)
+                    GuideId = table.Column<int>(type: "int", nullable: false),
+                    TravelerId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -61,28 +62,34 @@ namespace aspapp.Migrations
                         column: x => x.GuideId,
                         principalTable: "Guides",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Trips_Travelers_TravelerId",
+                        column: x => x.TravelerId,
+                        principalTable: "Travelers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
                 name: "TripTraveler",
                 columns: table => new
                 {
-                    TravelersId = table.Column<int>(type: "int", nullable: false),
-                    TripsId = table.Column<int>(type: "int", nullable: false)
+                    TravelerId = table.Column<int>(type: "int", nullable: false),
+                    TripId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TripTraveler", x => new { x.TravelersId, x.TripsId });
+                    table.PrimaryKey("PK_TripTraveler", x => new { x.TravelerId, x.TripId });
                     table.ForeignKey(
-                        name: "FK_TripTraveler_Travelers_TravelersId",
-                        column: x => x.TravelersId,
+                        name: "FK_TripTraveler_Travelers_TravelerId",
+                        column: x => x.TravelerId,
                         principalTable: "Travelers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_TripTraveler_Trips_TripsId",
-                        column: x => x.TripsId,
+                        name: "FK_TripTraveler_Trips_TripId",
+                        column: x => x.TripId,
                         principalTable: "Trips",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -94,9 +101,14 @@ namespace aspapp.Migrations
                 column: "GuideId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TripTraveler_TripsId",
+                name: "IX_Trips_TravelerId",
+                table: "Trips",
+                column: "TravelerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TripTraveler_TripId",
                 table: "TripTraveler",
-                column: "TripsId");
+                column: "TripId");
         }
 
         /// <inheritdoc />
@@ -106,13 +118,13 @@ namespace aspapp.Migrations
                 name: "TripTraveler");
 
             migrationBuilder.DropTable(
-                name: "Travelers");
-
-            migrationBuilder.DropTable(
                 name: "Trips");
 
             migrationBuilder.DropTable(
                 name: "Guides");
+
+            migrationBuilder.DropTable(
+                name: "Travelers");
         }
     }
 }

@@ -18,9 +18,15 @@ namespace aspapp.Controllers
         [HttpGet]
         public IActionResult CreateTrip()
         {
-            ViewBag.Guides = new SelectList(_context.Guides, "Id", "Firstname");
-            return View();
+            var guides = _context.Guides.ToList(); // Pobranie przewodników
+            var travelers = _context.Travelers.ToList(); // Pobranie podróżników
+
+            ViewBag.Guides = new SelectList(guides, "Id", "Firstname");
+            ViewBag.Travelers = new SelectList(travelers, "Id", "Firstname"); // Tworzenie listy podróżników
+
+            return View(new Trip()); // Przekazanie pustego modelu Trip do widoku
         }
+
 
         public IActionResult Login()
         {

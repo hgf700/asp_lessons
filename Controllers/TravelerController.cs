@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using aspapp.Models;
 using aspapp.Pages.Home;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 
 namespace aspapp.Controllers
@@ -14,17 +15,13 @@ namespace aspapp.Controllers
             _context = context;
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateTraveler(Traveler traveler)
+        [HttpGet]
+        public IActionResult CreateTraveler()
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(traveler);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(traveler);
+            var guides = _context.Guides.ToList(); // Pobranie przewodników z bazy danych
+            ViewBag.Guides = new SelectList(guides, "Id", "Firstname"); // Tworzenie listy przewodników
+            return View(new Traveler()); // Przekazanie pustego modelu Traveler do widoku
         }
+
     }
 }

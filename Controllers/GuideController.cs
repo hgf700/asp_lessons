@@ -15,27 +15,11 @@ namespace aspapp.Controllers
             _context = context;
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateTrip(Trip trip)
+        [HttpGet]
+        public IActionResult CreateGuide()
         {
-            if (ModelState.IsValid)
-            {
-                var guide = await _context.Guides.FindAsync(trip.GuideId);
-                if (guide == null)
-                {
-                    ModelState.AddModelError("GuideId", "Selected guide does not exist.");
-                    ViewBag.Guides = new SelectList(_context.Guides, "Id", "Firstname");
-                    return View(trip);
-                }
-
-                _context.Add(trip);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-
-            ViewBag.Guides = new SelectList(_context.Guides, "Id", "Firstname");
-            return View(trip);
+            return View(new Guide()); // Przekazanie pustego modelu Guide do widoku
         }
+
     }
 }
