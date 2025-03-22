@@ -41,5 +41,11 @@ namespace aspapp.Controllers
             var travelers = await _context.Travelers.ToListAsync();
             return View(travelers); // Wyświetlenie listy podróżników
         }
+
+        [HttpGet]
+        public IActionResult EditTraveler()
+        {
+            return View(new Traveler()); // Przekazanie pustego modelu Traveler do widoku
+        }
     }
 }

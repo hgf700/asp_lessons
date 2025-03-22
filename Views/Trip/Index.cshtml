@@ -1,17 +1,17 @@
 ﻿@model IEnumerable<aspapp.Models.Trip>
 
 @{
-    ViewData["Title"] = "ListaWycieczek";
+    ViewData["Title"] = "Lista Wycieczek";
 }
 
-<h2>ListaWycieczek</h2>
+<h2>Lista Wycieczek</h2>
 
 <table class="table">
     <thead>
         <tr>
             <th>Tytuł</th>
-            <th>Id przewodnika</th>
-            <th>Id podróżnika</th>
+            <th>Przewodnik</th>
+            <th>Podróżnik</th>
         </tr>
     </thead>
     <tbody>
@@ -19,11 +19,11 @@
         {
             <tr>
                 <td>@trip.Title</td>
-                <td>@trip.GuideId</td>
-                <td>@trip.TravelerId</td>
+                <td>@(trip.Guide != null ? trip.Guide.Firstname : "Brak przewodnika")</td>
+                <td>@(trip.Traveler != null ? trip.Traveler.Firstname : "Brak podróżnika")</td>
             </tr>
         }
     </tbody>
 </table>
 
-<a asp-action="CreateTrip" class="btn btn-primary">Dodaj nową wycieczke</a>
+<a asp-action="CreateTrip" class="btn btn-primary">Dodaj nową wycieczkę</a>

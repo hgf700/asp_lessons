@@ -24,7 +24,8 @@ namespace aspapp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken] // Chroni przed atakami CSRF
-        public async Task<IActionResult> CreateGuide(Guide guide)
+        public async Task<IActionResult> CreateGuide(
+            [Bind("Firstname,Lastname,Email,Title")] Guide guide)
         {
             if (ModelState.IsValid)
             {
