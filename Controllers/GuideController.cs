@@ -19,7 +19,7 @@ namespace aspapp.Controllers
         [HttpGet]
         public IActionResult CreateGuide()
         {
-            return View(new Guide()); // Przekazanie pustego modelu Traveler do widoku
+            return View(); // Przekazanie pustego modelu Traveler do widoku
         }
 
         [HttpPost]

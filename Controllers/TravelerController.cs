@@ -17,7 +17,7 @@ namespace aspapp.Controllers
         [HttpGet]
         public IActionResult CreateTraveler()
         {
-            return View(new Traveler()); // Przekazanie pustego modelu Traveler do widoku
+            return View(); // Przekazanie pustego modelu Traveler do widoku
         }
 
         [HttpPost]
@@ -43,9 +43,65 @@ namespace aspapp.Controllers
         }
 
         [HttpGet]
-        public IActionResult EditTraveler()
+        public async Task<IActionResult> EditTraveler(int id)
         {
-            return View(new Traveler()); // Przekazanie pustego modelu Traveler do widoku
+            var traveler = await _context.Travelers.FindAsync(id);
+
+            if (traveler == null)
+            {
+                return NotFound();
+            }
+
+            return View(traveler); // Przekazanie pustego modelu Traveler do widoku
+
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditTraveler(int id, Traveler traveler)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Update(traveler);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(traveler); // Przekazanie pustego modelu Traveler do widoku
+        }
+
+        // GET: DeleteTraveler
+        [HttpGet]
+        public async Task<IActionResult> DeleteTraveler(int id)
+        {
+            var traveler = await _context.Travelers.FindAsync(id);
+
+            if (traveler == null)
+            {
+                return NotFound(); // Jeśli nie znaleziono podróżnika
+            }
+
+            return View(traveler); // Przekazanie obiektu Traveler do widoku
+        }
+
+        // POST: DeleteTraveler
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteTraveler(int id, Traveler travelers)
+        {
+            var traveler = await _context.Travelers.FindAsync(id);
+
+            if (traveler == null)
+            {
+                return NotFound(); // Jeśli nie znaleziono podróżnika
+            }
+
+            _context.Travelers.Remove(traveler); // Usuwamy znalezionego podróżnika
+            await _context.SaveChangesAsync(); // Zapisujemy zmiany w bazie danych
+
+            return RedirectToAction(nameof(Index));
+
         }
     }
 }
+

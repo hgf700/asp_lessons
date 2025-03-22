@@ -22,14 +22,14 @@ namespace aspapp.Controllers
             ViewBag.Guides = new SelectList(_context.Guides, "Id", "Firstname");
             ViewBag.Travelers = new SelectList(_context.Travelers, "Id", "Firstname");
 
-            return View(new Trip()); // Przekazanie pustego modelu Traveler do widoku
+            return View(); // Przekazanie pustego modelu Traveler do widoku
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken] // Chroni przed atakami CSRF
         public async Task<IActionResult> CreateTrip(
 
-            [Bind("Title,GuideId,TravelerId")] Trip trip)
+            [Bind("Title,Description,GuideId,TravelerId")] Trip trip)
         {
             ViewBag.Guides = new SelectList(_context.Guides, "Id", "Firstname");
             ViewBag.Travelers = new SelectList(_context.Travelers, "Id", "Firstname");
