@@ -9,6 +9,6 @@
         public DateTime BirthDate { get; set; }
 
         // Many-to-many relationship: A Traveler can participate in many Trips
-        public List<Trip> Trips { get; set; } = new();
+        public List<Trip>? Trips { get; set; } = new();
     }
 }

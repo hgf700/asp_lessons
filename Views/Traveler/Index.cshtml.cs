@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace aspapp.Views.Home
+namespace aspapp.Views.Traveler
 {
     public class IndexModel : PageModel
     {

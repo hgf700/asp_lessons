@@ -2,6 +2,7 @@
 using aspapp.Models;
 using aspapp.Pages.Home;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace aspapp.Controllers
@@ -18,8 +19,29 @@ namespace aspapp.Controllers
         [HttpGet]
         public IActionResult CreateGuide()
         {
-            return View(new Guide()); // Przekazanie pustego modelu Guide do widoku
+            return View(new Guide()); // Przekazanie pustego modelu Traveler do widoku
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken] // Chroni przed atakami CSRF
+        public async Task<IActionResult> CreateGuide(Guide guide)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Guides.Add(guide); // Dodanie do bazy danych
+                await _context.SaveChangesAsync(); // Zapisanie zmian
+                return RedirectToAction(nameof(Index)); // Przekierowanie na stronę listy podróżników (lub inną stronę)
+            }
+
+            return View(guide); // Jeśli są błędy walidacji, zwróć formularz z danymi
+        }
+        [HttpGet]
+        public async Task<IActionResult> Index()
+        {
+            var guides = await _context.Guides.ToListAsync();
+            return View(guides); // Wyświetlenie listy podróżników
+        }
+
 
     }
 }

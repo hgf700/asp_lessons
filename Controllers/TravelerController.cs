@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using aspapp.Models;
-using aspapp.Pages.Home;
-using Microsoft.AspNetCore.Mvc.Rendering;
-
+using Microsoft.EntityFrameworkCore; // Potrzebne dla ToListAsync()
+using System.Threading.Tasks;
 
 namespace aspapp.Controllers
 {
@@ -18,10 +17,29 @@ namespace aspapp.Controllers
         [HttpGet]
         public IActionResult CreateTraveler()
         {
-            var guides = _context.Guides.ToList(); // Pobranie przewodników z bazy danych
-            ViewBag.Guides = new SelectList(guides, "Id", "Firstname"); // Tworzenie listy przewodników
             return View(new Traveler()); // Przekazanie pustego modelu Traveler do widoku
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken] // Chroni przed atakami CSRF
+        public async Task<IActionResult> CreateTraveler(
+            [Bind("Firstname,Lastname,Email,BirthDate")] Traveler traveler)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Travelers.Add(traveler); // Dodanie do bazy danych
+                await _context.SaveChangesAsync(); // Zapisanie zmian
+                return RedirectToAction(nameof(Index)); // Przekierowanie do listy podróżników
+            }
+
+            return View(traveler); // Jeśli są błędy walidacji, zwróć formularz z danymi
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Index()
+        {
+            var travelers = await _context.Travelers.ToListAsync();
+            return View(travelers); // Wyświetlenie listy podróżników
+        }
     }
 }

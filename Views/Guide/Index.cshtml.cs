@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace aspapp.Views.Home
+namespace aspapp.Views.Guide
 {
     public class IndexModel : PageModel
     {
@@ -14,7 +14,7 @@ namespace aspapp.Views.Home
 
         public void OnGet()
         {
-
+            
         }
     }
 }
