@@ -3,6 +3,7 @@ using aspapp.Models;
 using aspapp.Pages.Home;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 
 namespace aspapp.Controllers
@@ -43,6 +44,65 @@ namespace aspapp.Controllers
             return View(guides); // Wyświetlenie listy podróżników
         }
 
+        [HttpGet]
+        public async Task<IActionResult> EditGuide(int id)
+        {
+            var guide = await _context.Guides.FindAsync(id);
+
+            if (guide == null)
+            {
+                return NotFound();
+            }
+
+            return View(guide); // Przekazanie pustego modelu Traveler do widoku
+
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditGuide([Bind("Firstname,Lastname,Email,Title")] int id, Guide guide)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Update(guide);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(guide); // Przekazanie pustego modelu Traveler do widoku
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DeleteGuide(int id)
+        {
+            var guide = await _context.Guides.FindAsync(id);
+
+            if (guide == null)
+            {
+                return NotFound(); // Jeśli nie znaleziono podróżnika
+            }
+
+            return View(guide); // Przekazanie obiektu Traveler do widoku
+        }
+
+        // POST: DeleteTraveler
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteGuide(int id, Guide guides)
+        {
+            var guide = await _context.Guides.FindAsync(id);
+
+            if (guide == null)
+            {
+                return NotFound(); // Jeśli nie znaleziono podróżnika
+            }
+
+            _context.Guides.Remove(guide); // Usuwamy znalezionego podróżnika
+            await _context.SaveChangesAsync(); // Zapisujemy zmiany w bazie danych
+
+            return RedirectToAction(nameof(Index));
+
+        }
 
     }
 }

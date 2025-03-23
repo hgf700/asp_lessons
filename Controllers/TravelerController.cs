@@ -58,7 +58,7 @@ namespace aspapp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditTraveler(int id, Traveler traveler)
+        public async Task<IActionResult> EditTraveler([Bind("Firstname,Lastname,Email,BirthDate")] int id, Traveler traveler)
         {
             if (ModelState.IsValid)
             {

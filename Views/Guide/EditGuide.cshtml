@@ -1,14 +1,14 @@
-﻿@model aspapp.Models.Traveler
+﻿@model aspapp.Models.Guide
 
 @{
-    ViewData["Title"] = "Edytuj podróżnika";
+    ViewData["Title"] = "Edytuj przewodnika";
 }
 
-<h2>Edytuj podróżnika</h2>
+<h2>Edytuj przewodnika</h2>
 
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="EditTraveler" method="post">
+        <form asp-action="EditGuide" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             @Html.AntiForgeryToken()
@@ -27,14 +27,16 @@
 
             <div class="form-group">
                 <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" type="email" />
+                <input asp-for="Email" class="form-control" />
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="BirthDate" class="control-label"></label>
-                <input asp-for="BirthDate" class="form-control" type="date" />
-                <span asp-validation-for="BirthDate" class="text-danger"></span>
+                <label asp-for="Title" class="control-label"></label>
+                <select asp-for="Title" class="form-control" asp-items="Html.GetEnumSelectList<aspapp.Models.TitleEnum>()">
+                    <option value="">Select title ...</option>
+                </select>
+                <span asp-validation-for="Title" class="text-danger"></span>
             </div>
 
             <div class="form-group">
