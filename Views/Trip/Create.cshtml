@@ -1,11 +1,11 @@
 ﻿@model aspapp.Models.Trip
 @{
-    ViewData["Title"] = "CreateTrip";
+    ViewData["Title"] = "Create";
 }
 
 <div class="row">
     <div class="col-md-8">
-        <form asp-action="CreateTrip" method="post">
+        <form asp-action="Create" method="post">
             @Html.AntiForgeryToken()
 
             <div class="form-group">

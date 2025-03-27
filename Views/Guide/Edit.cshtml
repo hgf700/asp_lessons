@@ -1,14 +1,14 @@
 ﻿@model aspapp.Models.Guide
 
 @{
-    ViewData["Title"] = "Edytuj przewodnika";
+    ViewData["Title"] = "Edit";
 }
 
 <h2>Edytuj przewodnika</h2>
 
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="EditGuide" method="post">
+        <form asp-action="Edit" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             @Html.AntiForgeryToken()

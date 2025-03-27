@@ -1,136 +1,102 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using aspapp.Models;
+﻿using aspapp.Models;
+using aspapp.Repositories;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-
-
+using System.Threading.Tasks;
 
 namespace aspapp.Controllers
 {
     public class TripController : Controller
     {
-        private readonly trip_context _context;
+        private readonly ITripRepository _tripRepository;
+        private readonly IGuideRepository _guideRepository;
+        private readonly ITravelerRepository _travelerRepository;
 
-        public TripController(trip_context context)
+        public TripController(ITripRepository tripRepository, IGuideRepository guideRepository, ITravelerRepository travelerRepository)
         {
-            _context = context;
+            _tripRepository = tripRepository;
+            _guideRepository = guideRepository;
+            _travelerRepository = travelerRepository;
         }
 
         [HttpGet]
-        public IActionResult CreateTrip()
+        public async Task<IActionResult> CreateTrip()
         {
-            ViewBag.Guides = new SelectList(_context.Guides, "Id", "Firstname");
-            ViewBag.Travelers = new SelectList(_context.Travelers, "Id", "Firstname");
+            ViewBag.Guides = new SelectList(await _guideRepository.GetAllGuides(), "Id", "Firstname");
+            ViewBag.Travelers = new SelectList(await _travelerRepository.GetAllTravelers(), "Id", "Firstname");
 
-            return View(); // Przekazanie pustego modelu Traveler do widoku
+            return View();
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken] // Chroni przed atakami CSRF
-        public async Task<IActionResult> CreateTrip(
-
-            [Bind("Title,Description,GuideId,TravelerId")] Trip trip)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateTrip([Bind("Title,Description,GuideId,TravelerId")] Trip trip)
         {
-            ViewBag.Guides = new SelectList(_context.Guides, "Id", "Firstname");
-            ViewBag.Travelers = new SelectList(_context.Travelers, "Id", "Firstname");
-
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-
-                _context.Trips.Add(trip); // Dodanie do bazy danych
-                await _context.SaveChangesAsync(); // Zapisanie zmian
-                return RedirectToAction(nameof(Index)); // Przekierowanie na stronę listy podróżników (lub inną stronę)
+                ViewBag.Guides = new SelectList(await _guideRepository.GetAllGuides(), "Id", "Firstname");
+                ViewBag.Travelers = new SelectList(await _travelerRepository.GetAllTravelers(), "Id", "Firstname");
+                return View(trip);
             }
 
-
-
-            return View(trip); // Jeśli są błędy walidacji, zwróć formularz z danymi
+            await _tripRepository.AddTrip(trip);
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var trips = await _context.Trips
-                .Include(t => t.Guide) // Załaduj dane przewodnika
-                .Include(t => t.Traveler) // Załaduj dane podróżnika
-                .ToListAsync(); // Używaj async
-
-            return View(trips); // Wyświetlenie listy podróżników
+            var trips = await _tripRepository.GetAllTrips();
+            return View(trips);
         }
 
         [HttpGet]
         public async Task<IActionResult> EditTrip(int id)
         {
-            ViewBag.Guides = new SelectList(_context.Guides, "Id", "Firstname");
-            ViewBag.Travelers = new SelectList(_context.Travelers, "Id", "Firstname");
-
-            var trip = await _context.Trips.FindAsync(id);
-
+            var trip = await _tripRepository.GetTripById(id);
             if (trip == null)
             {
                 return NotFound();
             }
 
-            return View(trip); // Przekazanie pustego modelu Traveler do widoku
+            ViewBag.Guides = new SelectList(await _guideRepository.GetAllGuides(), "Id", "Firstname");
+            ViewBag.Travelers = new SelectList(await _travelerRepository.GetAllTravelers(), "Id", "Firstname");
 
+            return View(trip);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditTrip([Bind("Title,Description,GuideId,TravelerId")] int id, Trip trip)
+        public async Task<IActionResult> EditTrip(int id, [Bind("Title,Description,GuideId,TravelerId")] Trip trip)
         {
-            ViewBag.Guides = new SelectList(_context.Guides, "Id", "Firstname");
-            ViewBag.Travelers = new SelectList(_context.Travelers, "Id", "Firstname");
-
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _context.Update(trip);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                ViewBag.Guides = new SelectList(await _guideRepository.GetAllGuides(), "Id", "Firstname");
+                ViewBag.Travelers = new SelectList(await _travelerRepository.GetAllTravelers(), "Id", "Firstname");
+                return View(trip);
             }
 
-            return View(trip); // Przekazanie pustego modelu Traveler do widoku
+            await _tripRepository.UpdateTrip(trip);
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]
         public async Task<IActionResult> DeleteTrip(int id)
         {
-            var trip = await _context.Trips.FindAsync(id);
-
+            var trip = await _tripRepository.GetTripById(id);
             if (trip == null)
             {
-                return NotFound(); // Jeśli nie znaleziono podróżnika
+                return NotFound();
             }
-
-            return View(trip); // Przekazanie obiektu Traveler do widoku
+            return View(trip);
         }
 
-        // POST: DeleteTraveler
-        [HttpPost]
+        [HttpPost, ActionName("DeleteTrip")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteTrip(int id, Trip trips)
+        public async Task<IActionResult> DeleteTripConfirmed(int id)
         {
-            var trip = await _context.Trips.FindAsync(id);
-
-            if (trip == null)
-            {
-                return NotFound(); // Jeśli nie znaleziono podróżnika
-            }
-
-            _context.Trips.Remove(trip); // Usuwamy znalezionego podróżnika
-            await _context.SaveChangesAsync(); // Zapisujemy zmiany w bazie danych
-
+            await _tripRepository.DeleteTrip(id);
             return RedirectToAction(nameof(Index));
-
-        }
-
-        public IActionResult Login()
-        {
-            return View();
-        }
-        public IActionResult Search()
-        {
-            return View();
         }
     }
 }

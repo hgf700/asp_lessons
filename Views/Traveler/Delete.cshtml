@@ -1,14 +1,14 @@
 ﻿@model aspapp.Models.Traveler
 
 @{
-    ViewData["Title"] = "Usuń podróżnika";
+    ViewData["Title"] = "Delete";
 }
 
 <h2>Usuń podróżnika</h2>
 
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="DeleteTraveler" method="post">
+        <form asp-action="Delete" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" /> <!-- Ukryte pole, które zawiera id podróżnika -->
             @Html.AntiForgeryToken()

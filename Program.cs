@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using aspapp.Models;
+using aspapp.Repositories;
 
 namespace aspapp
 {
@@ -12,8 +13,14 @@ namespace aspapp
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
+            // Rejestracja DbContext
             builder.Services.AddDbContext<trip_context>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            // Rejestracja repozytoriów
+            builder.Services.AddScoped<ITravelerRepository, TravelerRepository>();
+            builder.Services.AddScoped<IGuideRepository, GuideRepository>();
+            builder.Services.AddScoped<ITripRepository, TripRepository>();
 
             var app = builder.Build();
 
@@ -39,5 +46,4 @@ namespace aspapp
             app.Run();
         }
     }
-
 }
