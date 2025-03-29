@@ -55,7 +55,7 @@ namespace aspapp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("TravelerId,Firstname,Lastname,Email,BirthDate")] Traveler traveler)
         {
-            if (id != traveler.Id) // Upewnij się, że właściwa nazwa pola id
+            if (id != traveler.Id) 
             {
                 return BadRequest();
             }
